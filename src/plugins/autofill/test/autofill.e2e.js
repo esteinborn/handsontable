@@ -46,7 +46,11 @@ describe('AutoFill', () => {
 
     expect(Handsontable.dom.getComputedStyle(hot.rootElement.querySelector('.ht_master .htBorders .current')).zIndex).toBe('10');
     expect(Handsontable.dom.getComputedStyle(hot.rootElement.querySelector('.ht_master .htBorders .area')).zIndex).toBe('8');
+
+    spec().$container.find('.wtBorder.area.corner').simulate('mousedown');
+    spec().$container.find('tbody tr:eq(3) td:eq(2)').simulate('mouseover'); // trigger rendering of fill highlight
     expect(Handsontable.dom.getComputedStyle(hot.rootElement.querySelector('.ht_master .htBorders .fill')).zIndex).toBe('6');
+    spec().$container.find('tbody tr:eq(3) td:eq(2)').simulate('mouseup');
   });
 
   it('should not change cell value (drag vertically when fillHandle option is set to `horizontal`)', () => {

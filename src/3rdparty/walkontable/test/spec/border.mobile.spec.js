@@ -100,14 +100,12 @@ describe('Walkontable.Border - mobile', () => {
     wt.draw();
 
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
-
     const $td2 = $table.find('tbody tr:eq(2) td:eq(1)');
+    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $top = $(wt.selections.getCell().getBorder(wt).top);
     const $right = $(wt.selections.getCell().getBorder(wt).right);
     const $bottom = $(wt.selections.getCell().getBorder(wt).bottom);
     const $left = $(wt.selections.getCell().getBorder(wt).left);
-
-    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
 
     expect($top.css('height')).toBe('1px');
     expect($top.position().top).toBe(23);
@@ -161,12 +159,11 @@ describe('Walkontable.Border - mobile', () => {
     wt.draw();
 
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
+    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $top = $(wt.selections.getCell().getBorder(wt).top);
     const $right = $(wt.selections.getCell().getBorder(wt).right);
     const $bottom = $(wt.selections.getCell().getBorder(wt).bottom);
     const $left = $(wt.selections.getCell().getBorder(wt).left);
-
-    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
 
     expect($top.css('height')).toBe('1px');
     expect($top.position().top).toBe(23);
@@ -255,13 +252,12 @@ describe('Walkontable.Border - mobile', () => {
 
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
     const $td2 = $table.find('tbody tr:eq(2) td:eq(1)');
+    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $corner = $(wt.selections.getCell().getBorder(wt).corner);
     const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft);
     const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea);
     const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight);
     const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea);
-
-    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
 
     expect($corner.is(':visible')).toBe(false);
     expect($selectionHandleTopLeft.css('width')).toBe('10px');
@@ -333,9 +329,9 @@ describe('Walkontable.Border - mobile', () => {
 
     expect($(wt.selections.getCell().getBorder(wt).corner).is(':visible')).toBe(false);
     expect($(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft).is(':visible')).toBe(false);
-    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea).is(':visible')).toBe(true);
+    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea).is(':visible')).toBe(false);
     expect($(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight).is(':visible')).toBe(false);
-    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea).is(':visible')).toBe(true);
+    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea).is(':visible')).toBe(false);
     expect($(wt.selections.getAreas()[0].getBorder(wt).corner).is(':visible')).toBe(false);
     expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandles.topLeft).is(':visible')).toBe(true);
     expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandles.topLeftHitArea).is(':visible')).toBe(true);
@@ -376,13 +372,12 @@ describe('Walkontable.Border - mobile', () => {
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
     const $td2 = $table.find('tbody tr:eq(3) td:eq(3)');
     const $td3 = $table.find('tbody tr:eq(2) td:eq(1)');
+    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $corner = $(wt.selections.getCell().getBorder(wt).corner);
     const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft);
     const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea);
     const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight);
     const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea);
-
-    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
 
     expect($corner.is(':visible')).toBe(false);
     expect($selectionHandleTopLeft.css('width')).toBe('10px');
@@ -480,13 +475,12 @@ describe('Walkontable.Border - mobile', () => {
     wt.draw();
 
     const $td = $table.find('tbody tr:last-of-type td:last-of-type');
+    $td[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $corner = $(wt.selections.getCell().getBorder(wt).corner);
     const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft);
     const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea);
     const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight);
     const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea);
-
-    $td[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
 
     wt.draw();
 
@@ -547,13 +541,12 @@ describe('Walkontable.Border - mobile', () => {
     wt.draw();
 
     const $td = $table.find('tbody tr:last-of-type td:last-of-type');
+    $td[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $corner = $(wt.selections.getCell().getBorder(wt).corner);
     const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft);
     const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea);
     const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight);
     const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea);
-
-    $td[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
 
     wt.draw();
 

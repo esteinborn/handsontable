@@ -112,8 +112,8 @@ describe('Walkontable.Selection', () => {
     setTimeout(() => {
       const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
       const $td2 = $table.find('tbody tr:eq(2) td:eq(1)');
-      const $top = $(wt.selections.getCell().getBorder(wt).top); // cheat... get border for ht_master
       $td1.simulate('mousedown');
+      const $top = $(wt.selections.getCell().getBorder(wt).top); // cheat... get border for ht_master
 
       const pos1 = $top.position();
       expect(pos1.top).toBeGreaterThan(0);

@@ -97,14 +97,12 @@ describe('Walkontable.Border - desktop', () => {
     wt.draw();
 
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
-
     const $td2 = $table.find('tbody tr:eq(2) td:eq(1)');
+    $td1.simulate('mousedown');
     const $top = $(wt.selections.getCell().getBorder(wt).top);
     const $right = $(wt.selections.getCell().getBorder(wt).right);
     const $bottom = $(wt.selections.getCell().getBorder(wt).bottom);
     const $left = $(wt.selections.getCell().getBorder(wt).left);
-
-    $td1.simulate('mousedown');
 
     expect($top.css('height')).toBe('1px');
     expect($top.position().top).toBe(23);
@@ -158,14 +156,12 @@ describe('Walkontable.Border - desktop', () => {
     wt.draw();
 
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
-
     const $td2 = $table.find('tbody tr:eq(2) td:eq(1)');
+    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $top = $(wt.selections.getCell().getBorder(wt).top);
     const $right = $(wt.selections.getCell().getBorder(wt).right);
     const $bottom = $(wt.selections.getCell().getBorder(wt).bottom);
     const $left = $(wt.selections.getCell().getBorder(wt).left);
-
-    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
 
     expect($top.css('height')).toBe('1px');
     expect($top.position().top).toBe(23);
@@ -219,12 +215,11 @@ describe('Walkontable.Border - desktop', () => {
     wt.draw();
 
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
+    $td1.simulate('mousedown');
     const $top = $(wt.selections.getCell().getBorder(wt).top);
     const $right = $(wt.selections.getCell().getBorder(wt).right);
     const $bottom = $(wt.selections.getCell().getBorder(wt).bottom);
     const $left = $(wt.selections.getCell().getBorder(wt).left);
-
-    $td1.simulate('mousedown');
 
     expect($top.css('height')).toBe('1px');
     expect($top.position().top).toBe(23);
@@ -263,12 +258,11 @@ describe('Walkontable.Border - desktop', () => {
     wt.draw();
 
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
+    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $top = $(wt.selections.getCell().getBorder(wt).top);
     const $right = $(wt.selections.getCell().getBorder(wt).right);
     const $bottom = $(wt.selections.getCell().getBorder(wt).bottom);
     const $left = $(wt.selections.getCell().getBorder(wt).left);
-
-    $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
 
     expect($top.css('height')).toBe('1px');
     expect($top.position().top).toBe(23);
@@ -357,9 +351,8 @@ describe('Walkontable.Border - desktop', () => {
 
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
     const $td2 = $table.find('tbody tr:eq(2) td:eq(1)');
-    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-
     $td1.simulate('mousedown');
+    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
 
     expect($corner.css('width')).toBe('6px');
     expect($corner.css('height')).toBe('6px');
@@ -402,9 +395,8 @@ describe('Walkontable.Border - desktop', () => {
 
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
     const $td2 = $table.find('tbody tr:eq(2) td:eq(1)');
-    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-
     $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
+    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
 
     expect($corner.css('width')).toBe('6px');
     expect($corner.css('height')).toBe('6px');
@@ -430,7 +422,6 @@ describe('Walkontable.Border - desktop', () => {
       selections: createSelectionController({
         current: new Walkontable.Selection({
           className: 'current',
-          border: {}
         }),
         area: new Walkontable.Selection({
           className: 'area',
@@ -449,9 +440,15 @@ describe('Walkontable.Border - desktop', () => {
     wt.draw();
 
     expect($(wt.selections.getCell().getBorder(wt).corner).is(':visible')).toBe(false);
-    expect(wt.selections.getCell().getBorder(wt).selectionHandles).toBe(undefined);
+    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft).is(':visible')).toBe(false);
+    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea).is(':visible')).toBe(false);
+    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight).is(':visible')).toBe(false);
+    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea).is(':visible')).toBe(false);
     expect($(wt.selections.getAreas()[0].getBorder(wt).corner).is(':visible')).toBe(true);
-    expect(wt.selections.getAreas()[0].getBorder(wt).selectionHandles).toBe(undefined);
+    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandles.topLeft).is(':visible')).toBe(false);
+    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandles.topLeftHitArea).is(':visible')).toBe(false);
+    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandles.bottomRight).is(':visible')).toBe(false);
+    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandles.bottomRightHitArea).is(':visible')).toBe(false);
   });
 
   it('on click, should move the fill handle / corner border to the left, if in the position it would overlap the container (e.g.: far-right)', () => {
@@ -487,9 +484,8 @@ describe('Walkontable.Border - desktop', () => {
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
     const $td2 = $table.find('tbody tr:eq(3) td:eq(3)');
     const $td3 = $table.find('tbody tr:eq(2) td:eq(1)');
-    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-
     $td1.simulate('mousedown');
+    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
 
     expect($corner.css('width')).toBe('6px');
     expect($corner.css('height')).toBe('6px');
@@ -547,9 +543,8 @@ describe('Walkontable.Border - desktop', () => {
     const $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
     const $td2 = $table.find('tbody tr:eq(3) td:eq(3)');
     const $td3 = $table.find('tbody tr:eq(2) td:eq(1)');
-    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-
     $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
+    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
 
     expect($corner.css('width')).toBe('6px');
     expect($corner.css('height')).toBe('6px');
@@ -608,9 +603,8 @@ describe('Walkontable.Border - desktop', () => {
     wt.draw();
 
     const $td = $table.find('tbody tr:last-of-type td:last-of-type');
-    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-
     $td.simulate('mousedown');
+    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
 
     wt.draw();
 
@@ -656,9 +650,8 @@ describe('Walkontable.Border - desktop', () => {
     wt.draw();
 
     const $td = $table.find('tbody tr:last-of-type td:last-of-type');
-    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-
     $td[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
+    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
 
     wt.draw();
 
@@ -706,9 +699,8 @@ describe('Walkontable.Border - desktop', () => {
     wt.draw();
 
     const $td = $table.find('tbody tr:last-of-type td:last-of-type');
-    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-
     $td.simulate('mousedown');
+    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
 
     wt.draw();
 
@@ -757,9 +749,8 @@ describe('Walkontable.Border - desktop', () => {
     wt.draw();
 
     const $td = $table.find('tbody tr:last-of-type td:last-of-type');
-    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-
     $td[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
+    const $corner = $(wt.selections.getCell().getBorder(wt).corner);
 
     wt.draw();
 

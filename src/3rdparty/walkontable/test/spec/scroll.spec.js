@@ -521,7 +521,7 @@ describe('WalkontableScroll', () => {
         topOverlayHolder.removeEventListener('scroll', topOverlayCallback);
         leftOverlayHolder.removeEventListener('scroll', leftOverlayCallback);
         done();
-      }, 20);
+      }, 200);
     });
 
     it('should call onScrollVertically hook, if scrollTop was changed', (done) => {
