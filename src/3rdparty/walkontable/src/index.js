@@ -25,6 +25,8 @@ import Table from './table';
 import TableRenderer from './tableRenderer';
 import Viewport from './viewport';
 
+import { setBrowserMeta } from './../../../helpers/browser';
+
 export {
   ViewportColumnsCalculator,
   ViewportRowsCalculator,
@@ -53,4 +55,6 @@ export {
   Table,
   TableRenderer,
   Viewport,
+
+  setBrowserMeta
 };
