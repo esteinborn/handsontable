@@ -771,4 +771,72 @@ describe('Walkontable.Border - desktop', () => {
     expect($container[0].clientHeight === $container[0].scrollHeight).toBe(true);
     expect($container[0].clientWidth === $container[0].scrollWidth).toBe(true);
   });
+
+  describe('hideBorderOnMouseDownOver', () => {
+    it('when `hideBorderOnMouseDownOver` is false, the border should NOT disappear if mouse cursor goes over it while selecting text', () => {
+      const wt = new Walkontable.Core({
+        table: $table[0],
+        data: getData,
+        totalRows: 5,
+        totalColumns: 5,
+        selections: createSelectionController({
+          current: new Walkontable.Selection({
+            border: {
+              width: 1,
+              color: 'red'
+            }
+          })
+        }),
+        hideBorderOnMouseDownOver: false
+      });
+      wt.selections.getCell().add(new Walkontable.CellCoords(0, 0));
+      wt.draw(true);
+      const $border = $(wt.selections.getCell().getBorder(wt).bottom);
+
+      const $td1 = $table.find('tbody tr:eq(0) td:eq(0)');
+      const $td2 = $table.find('tbody tr:eq(0) td:eq(1)');
+
+      $td1.simulate('mousedown');
+      expect($border.is(':visible')).toBe(true);
+
+      $border.simulate('mouseenter');
+      expect($border.is(':visible')).toBe(true);
+
+      $td2.simulate('mousemove');
+      expect($border.is(':visible')).toBe(true);
+    });
+
+    it('when `hideBorderOnMouseDownOver` is true, the border should disappear if mouse cursor goes over it while selecting text', () => {
+      const wt = new Walkontable.Core({
+        table: $table[0],
+        data: getData,
+        totalRows: 5,
+        totalColumns: 5,
+        selections: createSelectionController({
+          current: new Walkontable.Selection({
+            border: {
+              width: 1,
+              color: 'red'
+            }
+          })
+        }),
+        hideBorderOnMouseDownOver: true
+      });
+      wt.selections.getCell().add(new Walkontable.CellCoords(0, 0));
+      wt.draw(true);
+      const $border = $(wt.selections.getCell().getBorder(wt).bottom);
+
+      const $td1 = $table.find('tbody tr:eq(0) td:eq(0)');
+      const $td2 = $table.find('tbody tr:eq(0) td:eq(1)');
+
+      $td1.simulate('mousedown');
+      expect($border.is(':visible')).toBe(true);
+
+      $border.simulate('mouseenter');
+      expect($border.is(':visible')).toBe(false);
+
+      $td2.simulate('mousemove');
+      expect($border.is(':visible')).toBe(true);
+    });
+  });
 });
