@@ -9,7 +9,6 @@ import {
   setOverlayPosition,
   resetCssTransform,
 } from './../../../../helpers/dom/element';
-import { arrayEach } from './../../../../helpers/array';
 import Overlay from './_base';
 
 /**
@@ -285,32 +284,13 @@ class TopOverlay extends Overlay {
   }
 
   /**
-   * Redraw borders of selection.
-   *
-   * @param {WalkontableSelection} selection Selection for redraw.
-   */
-  redrawSelectionBorders(selection) {
-    if (selection && selection.cellRange) {
-      const border = selection.getBorder(this.wot);
-      const corners = selection.getCorners();
-
-      border.disappear();
-      border.appear(corners);
-    }
-  }
-
-  /**
    * Redrawing borders of all selections.
    */
   redrawAllSelectionsBorders() {
-    const selections = this.wot.selections;
-
-    this.redrawSelectionBorders(selections.getCell());
-
-    arrayEach(selections.getAreas(), (area) => {
-      this.redrawSelectionBorders(area);
-    });
-    this.redrawSelectionBorders(selections.getFill());
+    const selections = Array.from(this.wot.selections);
+    for (let i = 0; i < selections.length; i++) {
+      selections[i].draw(this.wot);
+    }
 
     this.wot.wtTable.wot.wtOverlays.leftOverlay.refresh();
   }

@@ -484,11 +484,11 @@ describe('Core_selection', () => {
     expect(`
       |   ║ - : - : * : - : - |
       |===:===:===:===:===:===|
-      | - ║ 0 :   : 0 :   :   |
-      | - ║   :   : 0 :   :   |
-      | * ║ A : 0 : 1 : 0 : 0 |
-      | - ║   :   : 0 :   :   |
-      | - ║   :   : 0 :   :   |
+      | - ║ 0 :   : 1 :   :   |
+      | - ║   :   : 1 :   :   |
+      | * ║ B : 1 : 2 : 1 : 1 |
+      | - ║   :   : 1 :   :   |
+      | - ║   :   : 1 :   :   |
       `).toBeMatchToSelectionPattern();
   });
 
@@ -1054,11 +1054,23 @@ describe('Core_selection', () => {
       colHeaders: true,
       rowHeaders: true,
       width: 400,
-      height: 200
+      height: 200,
+      customBorders: [
+        {
+          className: 'myCustom',
+          row: 5,
+          col: 4,
+          top: {
+            width: 2,
+            color: 'red',
+          }
+        }
+      ]
     });
     let cellVerticalPosition;
     const borderOffsetInPixels = 1;
     let topBorder;
+    let customBorder;
 
     selectCell(5, 5);
     hot.view.wt.wtOverlays.topOverlay.scrollTo(2);
@@ -1067,13 +1079,17 @@ describe('Core_selection', () => {
 
     cellVerticalPosition = hot.getCell(5, 5).offsetTop;
     topBorder = $('.wtBorder.current')[0];
+    customBorder = $('.wtBorder.myCustom')[0];
     expect(topBorder.offsetTop).toEqual(cellVerticalPosition - borderOffsetInPixels);
+    expect(customBorder.offsetTop).toEqual(cellVerticalPosition - borderOffsetInPixels);
     hot.view.wt.wtOverlays.topOverlay.scrollTo(0);
 
     await sleep(100);
     cellVerticalPosition = hot.getCell(5, 5).offsetTop;
     topBorder = $('.wtBorder.current')[0];
+    customBorder = $('.wtBorder.myCustom')[0];
     expect(topBorder.offsetTop).toEqual(cellVerticalPosition - borderOffsetInPixels);
+    expect(customBorder.offsetTop).toEqual(cellVerticalPosition - borderOffsetInPixels);
   });
 
   it('should redraw selection on `leftOverlay` when options `colHeaders` and `fixedColumnsLeft` are set, and user scrolled', async() => {

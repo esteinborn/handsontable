@@ -73,6 +73,10 @@ export function extendDefaultBorder(defaultBorder, customBorder) {
     defaultBorder.border = customBorder.border;
   }
 
+  if (hasOwnProperty(customBorder, 'className')) {
+    defaultBorder.className = customBorder.className;
+  }
+
   if (hasOwnProperty(customBorder, 'top')) {
     if (customBorder.top) {
       if (!isObject(customBorder.top)) {
