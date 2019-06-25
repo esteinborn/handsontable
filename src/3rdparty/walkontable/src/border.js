@@ -269,17 +269,17 @@ class Border {
       this.selectionHandles.topLeftHitArea.style.display = 'block';
 
       if (this.isPartRange(row, col)) {
-        this.selectionHandles.bottomRight.style.display = 'none';
-        this.selectionHandles.bottomRightHitArea.style.display = 'none';
+        this.hideElement(this.selectionHandles.bottomRight);
+        this.hideElement(this.selectionHandles.bottomRightHitArea);
       } else {
         this.selectionHandles.bottomRight.style.display = 'block';
         this.selectionHandles.bottomRightHitArea.style.display = 'block';
       }
     } else {
-      this.selectionHandles.topLeft.style.display = 'none';
-      this.selectionHandles.bottomRight.style.display = 'none';
-      this.selectionHandles.topLeftHitArea.style.display = 'none';
-      this.selectionHandles.bottomRightHitArea.style.display = 'none';
+      this.hideElement(this.selectionHandles.topLeft);
+      this.hideElement(this.selectionHandles.bottomRight);
+      this.hideElement(this.selectionHandles.topLeftHitArea);
+      this.hideElement(this.selectionHandles.bottomRightHitArea);
     }
 
     if (row === this.wot.wtSettings.getSetting('fixedRowsTop') || col === this.wot.wtSettings.getSetting('fixedColumnsLeft')) {
