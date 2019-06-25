@@ -290,10 +290,6 @@ class Border {
    * @param {Array} corners
    */
   appear(corners) {
-    if (this.disabled) {
-      return;
-    }
-
     const { wtTable, rootWindow } = this.wot;
     let fromRow;
     let toRow;
