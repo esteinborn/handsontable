@@ -542,15 +542,15 @@ describe('NestedHeaders', () => {
       const $leftBorder = this.$container.find('.wtBorder.area').eq(1);
       const $rightBorder = this.$container.find('.wtBorder.area').eq(3);
 
-      expect($topBorder.offset().top).toEqual($firstRow.offset().top - 1);
+      expect($topBorder.offset().top).toEqual($firstRow.offset().top);
       expect($bottomBorder.offset().top).toEqual($lastRow.offset().top + $lastRow.height() - 1);
-      expect($topBorder.width()).toEqual($headerLvl3.width());
-      expect($bottomBorder.width()).toEqual($headerLvl3.width());
+      expect($topBorder.width()).toEqual($headerLvl3.width() + 1);
+      expect($bottomBorder.width()).toEqual($headerLvl3.width() + 1);
 
-      expect($leftBorder.offset().left).toEqual($headerLvl3.offset().left);
+      expect($leftBorder.offset().left).toEqual($headerLvl3.offset().left - 1);
       expect($rightBorder.offset().left).toEqual($headerLvl3.offset().left + $headerLvl3.width());
-      expect($leftBorder.height()).toEqual($tbody.height());
-      expect($rightBorder.height()).toEqual($tbody.height() + 1);
+      expect($leftBorder.height()).toEqual($tbody.height() - 1);
+      expect($rightBorder.height()).toEqual($tbody.height());
     });
   });
 });

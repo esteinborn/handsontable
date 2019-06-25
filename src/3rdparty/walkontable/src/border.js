@@ -287,60 +287,15 @@ class Border {
   /**
    * Show border around one or many cells
    *
-   * @param {Array} corners
+   * @param {Number} fromRow Source number of starting row
+   * @param {Number} fromColumn Source number of starting column
+   * @param {Number} toRow Source number of ending row
+   * @param {Number} toColumn Source number of ending column
    */
-  appear(corners) {
+  appear(fromRow, fromColumn, toRow, toColumn) {
     const { wtTable, rootWindow } = this.wot;
-    let fromRow;
-    let toRow;
-    let fromColumn;
-    let toColumn;
 
-    const rowsCount = wtTable.getRenderedRowsCount(); // TODO this is redundant, because Selection.js does the same thing
-
-    for (let i = 0; i < rowsCount; i += 1) {
-      const s = wtTable.rowFilter.renderedToSource(i);
-
-      if (s >= corners[0] && s <= corners[2]) {
-        fromRow = s;
-        break;
-      }
-    }
-
-    for (let i = rowsCount - 1; i >= 0; i -= 1) {
-      const s = wtTable.rowFilter.renderedToSource(i);
-
-      if (s >= corners[0] && s <= corners[2]) {
-        toRow = s;
-        break;
-      }
-    }
-
-    const columnsCount = wtTable.getRenderedColumnsCount();
-
-    for (let i = 0; i < columnsCount; i += 1) {
-      const s = wtTable.columnFilter.renderedToSource(i);
-
-      if (s >= corners[1] && s <= corners[3]) {
-        fromColumn = s;
-        break;
-      }
-    }
-
-    for (let i = columnsCount - 1; i >= 0; i -= 1) {
-      const s = wtTable.columnFilter.renderedToSource(i);
-
-      if (s >= corners[1] && s <= corners[3]) {
-        toColumn = s;
-        break;
-      }
-    }
-    if (fromRow === void 0 || fromColumn === void 0) {
-      this.disappear();
-
-      return;
-    }
-    let fromTD = wtTable.getCell(new CellCoords(fromRow, fromColumn));
+    const fromTD = wtTable.getCell(new CellCoords(fromRow, fromColumn));
     const isMultiple = (fromRow !== toRow || fromColumn !== toColumn);
     const toTD = isMultiple ? wtTable.getCell(new CellCoords(toRow, toColumn)) : fromTD;
     const fromOffset = offset(fromTD);
@@ -352,34 +307,8 @@ class Border {
     let left = minLeft - containerOffset.left - 1;
     let width = toOffset.left + outerWidth(toTD) - minLeft;
 
-    if (this.isEntireColumnSelected(fromRow, toRow)) {
-      const modifiedValues = this.getDimensionsFromHeader('columns', fromColumn, toColumn, containerOffset);
-      let fromTH = null;
-
-      if (modifiedValues) {
-        [fromTH, left, width] = modifiedValues;
-      }
-
-      if (fromTH) {
-        fromTD = fromTH;
-      }
-    }
-
     let top = minTop - containerOffset.top - 1;
     let height = toOffset.top + outerHeight(toTD) - minTop;
-
-    if (this.isEntireRowSelected(fromColumn, toColumn)) {
-      const modifiedValues = this.getDimensionsFromHeader('rows', fromRow, toRow, containerOffset);
-      let fromTH = null;
-
-      if (modifiedValues) {
-        [fromTH, top, height] = modifiedValues;
-      }
-
-      if (fromTH) {
-        fromTD = fromTH;
-      }
-    }
 
     const style = getComputedStyle(fromTD, rootWindow);
 
@@ -493,92 +422,6 @@ class Border {
     if (!this.selectionHandles[position]) {
       this.createMultipleSelectorHandles(position);
     }
-  }
-
-  /**
-   * Check whether an entire column of cells is selected.
-   *
-   * @private
-   * @param {Number} startRowIndex Start row index.
-   * @param {Number} endRowIndex End row index.
-   */
-  isEntireColumnSelected(startRowIndex, endRowIndex) {
-    return startRowIndex === this.wot.wtTable.getFirstRenderedRow() && endRowIndex === this.wot.wtTable.getLastRenderedRow();
-  }
-
-  /**
-   * Check whether an entire row of cells is selected.
-   *
-   * @private
-   * @param {Number} startColumnIndex Start column index.
-   * @param {Number} endColumnIndex End column index.
-   */
-  isEntireRowSelected(startColumnIndex, endColumnIndex) {
-    return startColumnIndex === this.wot.wtTable.getFirstRenderedColumn() && endColumnIndex === this.wot.wtTable.getLastRenderedColumn();
-  }
-
-  /**
-   * Get left/top index and width/height depending on the `direction` provided.
-   *
-   * @private
-   * @param {String} direction `rows` or `columns`, defines if an entire column or row is selected.
-   * @param {Number} fromIndex Start index of the selection.
-   * @param {Number} toIndex End index of the selection.
-   * @param {Number} containerOffset offset of the container.
-   * @return {Array|Boolean} Returns an array of [headerElement, left, width] or [headerElement, top, height], depending on `direction` (`false` in case of an error getting the headers).
-   */
-  getDimensionsFromHeader(direction, fromIndex, toIndex, containerOffset) {
-    const { wtTable } = this.wot;
-    const rootHotElement = wtTable.wtRootElement.parentNode;
-    let getHeaderFn = null;
-    let dimensionFn = null;
-    let entireSelectionClassname = null;
-    let index = null;
-    let dimension = null;
-    let dimensionProperty = null;
-    let startHeader = null;
-    let endHeader = null;
-
-    switch (direction) {
-      case 'rows':
-        getHeaderFn = (...args) => wtTable.getRowHeader(...args);
-        dimensionFn = (...args) => outerHeight(...args);
-        entireSelectionClassname = 'ht__selection--rows';
-        dimensionProperty = 'top';
-
-        break;
-
-      case 'columns':
-        getHeaderFn = (...args) => wtTable.getColumnHeader(...args);
-        dimensionFn = (...args) => outerWidth(...args);
-        entireSelectionClassname = 'ht__selection--columns';
-        dimensionProperty = 'left';
-        break;
-      default:
-    }
-
-    if (rootHotElement.className.includes(entireSelectionClassname)) {
-      const columnHeaderLevelCount = this.wot.getSetting('columnHeaders').length;
-
-      startHeader = getHeaderFn(fromIndex, columnHeaderLevelCount - 1);
-      endHeader = getHeaderFn(toIndex, columnHeaderLevelCount - 1);
-
-      if (!startHeader || !endHeader) {
-        return false;
-      }
-
-      const startHeaderOffset = offset(startHeader);
-      const endOffset = offset(endHeader);
-
-      if (startHeader && endHeader) {
-        index = startHeaderOffset[dimensionProperty] - containerOffset[dimensionProperty] - 1;
-        dimension = endOffset[dimensionProperty] + dimensionFn(endHeader) - startHeaderOffset[dimensionProperty];
-      }
-
-      return [startHeader, index, dimension];
-    }
-
-    return false;
   }
 
   /**

@@ -207,7 +207,10 @@ class Selection {
     const renderedColumns = wotInstance.wtTable.getRenderedColumnsCount();
     const corners = this.getCorners();
     const [topRow, topColumn, bottomRow, bottomColumn] = corners;
-    let areRenderedCells = false;
+    let viewportFromSourceRow;
+    let viewportFromSourceColumn;
+    let viewportToSourceRow;
+    let viewportToSourceColumn;
 
     for (let column = 0; column < renderedColumns; column += 1) {
       const sourceCol = wotInstance.wtTable.columnFilter.renderedToSource(column);
@@ -257,7 +260,13 @@ class Selection {
 
         if (sourceRow >= topRow && sourceRow <= bottomRow && sourceCol >= topColumn && sourceCol <= bottomColumn) {
           // selected cell
-          areRenderedCells = true;
+          if (viewportFromSourceRow === undefined) {
+            viewportFromSourceRow = sourceRow;
+            viewportFromSourceColumn = sourceCol;
+          }
+          viewportToSourceRow = sourceRow;
+          viewportToSourceColumn = sourceCol;
+
           if (this.settings.className) {
             this.addClassAtCoords(wotInstance, sourceRow, sourceCol, this.settings.className, this.settings.markIntersections);
           }
@@ -287,8 +296,8 @@ class Selection {
 
     if (this.settings.border) {
       // warning! border.appear modifies corners!
-      if (areRenderedCells) {
-        this.getBorder(wotInstance).appear(corners);
+      if (viewportFromSourceRow !== undefined) {
+        this.getBorder(wotInstance).appear(viewportFromSourceRow, viewportFromSourceColumn, viewportToSourceRow, viewportToSourceColumn);
       } else {
         const existingBorder = this.getBorderIfExists(wotInstance);
         if (existingBorder) {
