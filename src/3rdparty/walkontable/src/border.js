@@ -548,6 +548,10 @@ class Border {
    * Cleans up all the DOM state related to a Border instance. Call this prior to deleting a Border instance.
    */
   destroy() {
+    if (this.destroyed) {
+      throw new Error('This Border was already destroyed');
+    }
+    this.destroyed = true;
     this.eventManager.destroyWithOwnEventsOnly();
     this.forAllDomElements(elem => elem.parentNode.removeChild(elem));
   }

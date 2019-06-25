@@ -311,7 +311,12 @@ class Selection {
    * Cleans up all the DOM state related to a Selection instance. Call this prior to deleting a Selection instance.
    */
   destroy() {
+    if (this.destroyed) {
+      throw new Error('This Selection was already destroyed');
+    }
+    this.destroyed = true;
     Object.values(this.instanceBorders).forEach(border => border.destroy());
+    this.instanceBorders = {};
   }
 }
 
