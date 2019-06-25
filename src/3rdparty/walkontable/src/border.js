@@ -248,42 +248,39 @@ class Border {
   }
 
   updateMultipleSelectionHandlesPosition(row, col, top, left, width, height) {
-    this.selectionHandles.topLeft.style.top = `${parseInt(top - selectionHandleDefaultWidth, 10)}px`;
-    this.selectionHandles.topLeft.style.left = `${parseInt(left - selectionHandleDefaultWidth, 10)}px`;
-
-    this.selectionHandles.topLeftHitArea.style.top = `${parseInt(top - ((selectionHandleHitAreaDefaultWidth / 4) * 3), 10)}px`;
-    this.selectionHandles.topLeftHitArea.style.left = `${parseInt(left - ((selectionHandleHitAreaDefaultWidth / 4) * 3), 10)}px`;
-
-    this.selectionHandles.bottomRight.style.top = `${parseInt(top + height, 10)}px`;
-    this.selectionHandles.bottomRight.style.left = `${parseInt(left + width, 10)}px`;
-
-    this.selectionHandles.bottomRightHitArea.style.top = `${parseInt(top + height - (selectionHandleHitAreaDefaultWidth / 4), 10)}px`;
-    this.selectionHandles.bottomRightHitArea.style.left = `${parseInt(left + width - (selectionHandleHitAreaDefaultWidth / 4), 10)}px`;
-
     if (this.settings.border.cornerVisible && this.settings.border.cornerVisible()) {
-      this.selectionHandles.topLeft.style.display = 'block';
-      this.selectionHandles.topLeftHitArea.style.display = 'block';
+      this.updateElementPosition(this.selectionHandles.topLeft,
+        top - selectionHandleDefaultWidth,
+        left - selectionHandleDefaultWidth,
+        null, null);
+      this.updateElementPosition(this.selectionHandles.topLeftHitArea,
+        parseInt(top - ((selectionHandleHitAreaDefaultWidth / 4) * 3), 10),
+        parseInt(left - ((selectionHandleHitAreaDefaultWidth / 4) * 3), 10),
+        null, null);
 
       if (this.isPartRange(row, col)) {
         this.hideElement(this.selectionHandles.bottomRight);
         this.hideElement(this.selectionHandles.bottomRightHitArea);
       } else {
-        this.selectionHandles.bottomRight.style.display = 'block';
-        this.selectionHandles.bottomRightHitArea.style.display = 'block';
+        this.updateElementPosition(this.selectionHandles.bottomRight, top + height, left + width, null, null);
+        this.updateElementPosition(this.selectionHandles.bottomRightHitArea,
+          parseInt(top + height - (selectionHandleHitAreaDefaultWidth / 4), 10),
+          parseInt(left + width - (selectionHandleHitAreaDefaultWidth / 4), 10),
+          null, null);
+      }
+
+      if (row === this.wot.wtSettings.getSetting('fixedRowsTop') || col === this.wot.wtSettings.getSetting('fixedColumnsLeft')) {
+        this.selectionHandles.topLeft.style.zIndex = '9999';
+        this.selectionHandles.topLeftHitArea.style.zIndex = '9999';
+      } else {
+        this.selectionHandles.topLeft.style.zIndex = '';
+        this.selectionHandles.topLeftHitArea.style.zIndex = '';
       }
     } else {
       this.hideElement(this.selectionHandles.topLeft);
       this.hideElement(this.selectionHandles.bottomRight);
       this.hideElement(this.selectionHandles.topLeftHitArea);
       this.hideElement(this.selectionHandles.bottomRightHitArea);
-    }
-
-    if (row === this.wot.wtSettings.getSetting('fixedRowsTop') || col === this.wot.wtSettings.getSetting('fixedColumnsLeft')) {
-      this.selectionHandles.topLeft.style.zIndex = '9999';
-      this.selectionHandles.topLeftHitArea.style.zIndex = '9999';
-    } else {
-      this.selectionHandles.topLeft.style.zIndex = '';
-      this.selectionHandles.topLeftHitArea.style.zIndex = '';
     }
   }
 
@@ -303,7 +300,7 @@ class Border {
     let fromColumn;
     let toColumn;
 
-    const rowsCount = wtTable.getRenderedRowsCount();
+    const rowsCount = wtTable.getRenderedRowsCount(); // TODO this is redundant, because Selection.js does the same thing
 
     for (let i = 0; i < rowsCount; i += 1) {
       const s = wtTable.rowFilter.renderedToSource(i);
@@ -465,7 +462,7 @@ class Border {
           const cornerOverlappingContainer = cornerBottomEdge >= innerHeight(trimmingContainer);
 
           if (cornerOverlappingContainer) {
-            cornerTop = Math.floor(top + height - 3 - (cornerDefaultStyle.height / 2)); //bad
+            cornerTop = Math.floor(top + height - 3 - (cornerDefaultStyle.height / 2));
             this.corner.style.borderBottomWidth = 0;
           }
         }
