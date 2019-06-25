@@ -15,6 +15,7 @@ import ColumnFilter from './filter/column';
 import RowFilter from './filter/row';
 import TableRenderer from './tableRenderer';
 import Overlay from './overlay/_base';
+import BordersHolder from './bordersHolder';
 
 /**
  *
@@ -58,6 +59,9 @@ class Table {
 
     // Fix for jumping row headers (https://github.com/handsontable/handsontable/issues/3850)
     this.wot.wtSettings.settings.rowHeaderWidth = () => this._modifyRowHeaderWidth(origRowHeaderWidth);
+
+    this.bordersHolder = new BordersHolder(this.wot);
+    this.spreader.appendChild(this.bordersHolder.container);
   }
 
   /**
@@ -736,6 +740,10 @@ class Table {
     }
 
     return rowHeaderWidth;
+  }
+
+  destroy() {
+    this.bordersHolder.destroy();
   }
 }
 
