@@ -29,6 +29,94 @@ const defaultBorder = {
 const selectionHandleDefaultWidth = 10;
 const selectionHandleHitAreaDefaultWidth = 40;
 
+class BorderHolder {
+  constructor(wotInstance) {
+    this.eventManager = new EventManager(wotInstance);
+    this.wot = wotInstance;
+
+    this.container = this.wot.rootDocument.createElement('div');
+    this.container.className = 'htBorders';
+    this.wot.wtTable.spreader.appendChild(this.container);
+    // this.eventManager.addEventListener(this.container, 'mouseover', event => this.onMouseOver(event));
+
+    const documentBody = this.wot.rootDocument.body;
+    this.eventManager.addEventListener(documentBody, 'mousedown', () => this.onMouseDown());
+    this.eventManager.addEventListener(documentBody, 'mouseup', () => this.onMouseUp());
+  }
+
+  /**
+   * Mouse down listener
+   *
+   * @private
+   */
+  onMouseDown() {
+    this.mouseDown = true;
+  }
+
+  /**
+   * Mouse up listener
+   *
+   * @private
+   */
+  onMouseUp() {
+    this.mouseDown = false;
+  }
+
+  /**
+   * Mouse over listener for fragment selection functionality.
+   *
+   * @private
+   * @param {Event} event Dom event
+   */
+  onMouseOver(event) {
+    if (!this.mouseDown || !this.wot.getSetting('hideBorderOnMouseDownOver') || !hasClass(event.target, 'wtBorder')) {
+      return;
+    }
+    event.preventDefault();
+    stopImmediatePropagation(event);
+
+    const _this = this;
+    const documentBody = this.wot.rootDocument.body;
+    const bounds = event.target.getBoundingClientRect();
+    // Hide border to prevents selection jumping when fragmentSelection is enabled.
+    event.target.style.display = 'none';
+
+    function isOutside(mouseEvent) {
+      if (mouseEvent.clientY < Math.floor(bounds.top)) {
+        return true;
+      }
+      if (mouseEvent.clientY > Math.ceil(bounds.top + bounds.height)) {
+        return true;
+      }
+      if (mouseEvent.clientX < Math.floor(bounds.left)) {
+        return true;
+      }
+      if (mouseEvent.clientX > Math.ceil(bounds.left + bounds.width)) {
+        return true;
+      }
+    }
+
+    function handler(handlerEvent) {
+      if (isOutside(handlerEvent)) {
+        _this.eventManager.removeEventListener(documentBody, 'mousemove', handler);
+        event.target.style.display = 'block';
+      }
+    }
+
+    this.eventManager.addEventListener(documentBody, 'mousemove', handler);
+  }
+
+  /**
+   * Cleans up all the DOM state related to a Border instance. Call this prior to deleting a Border instance.
+   */
+  destroy() {
+    this.eventManager.destroyWithOwnEventsOnly();
+    this.container.parentNode.removeChild(this.container);
+    this.wot = null;
+    this.eventManager = null;
+  }
+}
+
 /**
  *
  */
@@ -41,19 +129,13 @@ class Border {
     if (!settings) {
       return;
     }
-    this.eventManager = new EventManager(wotInstance);
     this.wot = wotInstance;
     this.settings = settings;
-    this.mouseDown = false;
 
-    this.bordersHolder = this.wot.wtTable.bordersHolder;
-
-    if (!this.bordersHolder) {
-      this.bordersHolder = this.wot.rootDocument.createElement('div');
-      this.bordersHolder.className = 'htBorders';
-      this.wot.wtTable.bordersHolder = this.bordersHolder;
-      this.wot.wtTable.spreader.appendChild(this.bordersHolder);
+    if (!this.wot.wtTable.bordersHolder) {
+      this.wot.wtTable.bordersHolder = new BorderHolder(this.wot);
     }
+    this.bordersHolder = this.wot.wtTable.bordersHolder;
 
     this.top = null;
     this.left = null;
@@ -61,8 +143,6 @@ class Border {
     this.right = null;
     this.corner = null;
     this.selectionHandles = {};
-
-    this.registerListeners();
   }
 
   /**
@@ -94,79 +174,6 @@ class Border {
   }
 
   /**
-   * Register all necessary events
-   */
-  registerListeners() {
-    const documentBody = this.wot.rootDocument.body;
-
-    this.eventManager.addEventListener(documentBody, 'mousedown', () => this.onMouseDown());
-    this.eventManager.addEventListener(documentBody, 'mouseup', () => this.onMouseUp());
-  }
-
-  /**
-   * Mouse down listener
-   *
-   * @private
-   */
-  onMouseDown() {
-    this.mouseDown = true;
-  }
-
-  /**
-   * Mouse up listener
-   *
-   * @private
-   */
-  onMouseUp() {
-    this.mouseDown = false;
-  }
-
-  /**
-   * Mouse enter listener for fragment selection functionality.
-   *
-   * @private
-   * @param {Event} event Dom event
-   * @param {HTMLElement} parentElement Part of border element.
-   */
-  onMouseEnter(event, parentElement) {
-    if (!this.mouseDown || !this.wot.getSetting('hideBorderOnMouseDownOver')) {
-      return;
-    }
-    event.preventDefault();
-    stopImmediatePropagation(event);
-
-    const _this = this;
-    const documentBody = this.wot.rootDocument.body;
-    const bounds = parentElement.getBoundingClientRect();
-    // Hide border to prevents selection jumping when fragmentSelection is enabled.
-    parentElement.style.display = 'none';
-
-    function isOutside(mouseEvent) {
-      if (mouseEvent.clientY < Math.floor(bounds.top)) {
-        return true;
-      }
-      if (mouseEvent.clientY > Math.ceil(bounds.top + bounds.height)) {
-        return true;
-      }
-      if (mouseEvent.clientX < Math.floor(bounds.left)) {
-        return true;
-      }
-      if (mouseEvent.clientX > Math.ceil(bounds.left + bounds.width)) {
-        return true;
-      }
-    }
-
-    function handler(handlerEvent) {
-      if (isOutside(handlerEvent)) {
-        _this.eventManager.removeEventListener(documentBody, 'mousemove', handler);
-        parentElement.style.display = 'block';
-      }
-    }
-
-    this.eventManager.addEventListener(documentBody, 'mousemove', handler);
-  }
-
-  /**
    * Create border elements
    *
    * @param {Object} settings
@@ -181,7 +188,7 @@ class Border {
     style.height = (this.settings[position] && this.settings[position].width) ? `${this.settings[position].width}px` : `${this.settings.border.width}px`;
     style.width = (this.settings[position] && this.settings[position].width) ? `${this.settings[position].width}px` : `${this.settings.border.width}px`;
 
-    this.bordersHolder.appendChild(div);
+    this.bordersHolder.container.appendChild(div);
     this[position] = div;
 
     if (position === 'corner') {
@@ -194,8 +201,6 @@ class Border {
         cornerDefaultStyle.borderColor
       ].join(' ');
     }
-
-    this.eventManager.addEventListener(div, 'mouseenter', event => this.onMouseEnter(event, div));
   }
 
   /**
@@ -209,18 +214,16 @@ class Border {
     const divHitArea = this.wot.rootDocument.createElement('DIV');
     this.selectionHandles[positionHitArea] = divHitArea;
 
-    div.className = `${position}SelectionHandle`;
-    divHitArea.className = `${position}SelectionHandle-HitArea`;
+    div.className = `wtBorder ${position}SelectionHandle`;
+    divHitArea.className = `wtBorder ${position}SelectionHandle-HitArea`;
 
     Object.assign(divHitArea.style, {
-      position: 'absolute',
       height: `${selectionHandleHitAreaDefaultWidth}px`,
       width: `${selectionHandleHitAreaDefaultWidth}px`,
       'border-radius': `${parseInt(selectionHandleHitAreaDefaultWidth / 1.5, 10)}px`,
     });
 
     Object.assign(div.style, {
-      position: 'absolute',
       height: `${selectionHandleDefaultWidth}px`,
       width: `${selectionHandleDefaultWidth}px`,
       'border-radius': `${parseInt(selectionHandleDefaultWidth / 1.5, 10)}px`,
@@ -228,11 +231,8 @@ class Border {
       border: '1px solid #4285c8'
     });
 
-    this.bordersHolder.appendChild(div);
-    this.bordersHolder.appendChild(divHitArea);
-
-    this.eventManager.addEventListener(div, 'mouseenter', event => this.onMouseEnter(event, div));
-    this.eventManager.addEventListener(divHitArea, 'mouseenter', event => this.onMouseEnter(event, divHitArea));
+    this.bordersHolder.container.appendChild(div);
+    this.bordersHolder.container.appendChild(divHitArea);
   }
 
   isPartRange(row, col) {
@@ -552,7 +552,6 @@ class Border {
       throw new Error('This Border was already destroyed');
     }
     this.destroyed = true;
-    this.eventManager.destroyWithOwnEventsOnly();
     this.forAllDomElements(elem => elem.parentNode.removeChild(elem));
   }
 }
