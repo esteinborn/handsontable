@@ -16,9 +16,9 @@ import EventManager from './../../../eventManager';
 import CellCoords from './cell/coords';
 
 const cornerDefaultStyle = {
-  width: '6px',
-  height: '6px',
-  borderWidth: '1px',
+  width: 6,
+  height: 6,
+  borderWidth: 1,
   borderStyle: 'solid',
   borderColor: '#FFF'
 };
@@ -26,6 +26,8 @@ const defaultBorder = {
   width: 1,
   color: '#000',
 };
+const selectionHandleDefaultWidth = 10;
+const selectionHandleHitAreaDefaultWidth = 40;
 
 /**
  *
@@ -184,10 +186,10 @@ class Border {
 
     if (position === 'corner') {
       div.className += ' corner';
-      style.width = cornerDefaultStyle.width;
-      style.height = cornerDefaultStyle.height;
+      style.width = `${cornerDefaultStyle.width}px`;
+      style.height = `${cornerDefaultStyle.height}px`;
       style.border = [
-        cornerDefaultStyle.borderWidth,
+        `${cornerDefaultStyle.borderWidth}px`,
         cornerDefaultStyle.borderStyle,
         cornerDefaultStyle.borderColor
       ].join(' ');
@@ -207,24 +209,21 @@ class Border {
     const divHitArea = this.wot.rootDocument.createElement('DIV');
     this.selectionHandles[positionHitArea] = divHitArea;
 
-    const width = 10;
-    const hitAreaWidth = 40;
-
     div.className = `${position}SelectionHandle`;
     divHitArea.className = `${position}SelectionHandle-HitArea`;
 
     Object.assign(divHitArea.style, {
       position: 'absolute',
-      height: `${hitAreaWidth}px`,
-      width: `${hitAreaWidth}px`,
-      'border-radius': `${parseInt(hitAreaWidth / 1.5, 10)}px`,
+      height: `${selectionHandleHitAreaDefaultWidth}px`,
+      width: `${selectionHandleHitAreaDefaultWidth}px`,
+      'border-radius': `${parseInt(selectionHandleHitAreaDefaultWidth / 1.5, 10)}px`,
     });
 
     Object.assign(div.style, {
       position: 'absolute',
-      height: `${width}px`,
-      width: `${width}px`,
-      'border-radius': `${parseInt(width / 1.5, 10)}px`,
+      height: `${selectionHandleDefaultWidth}px`,
+      width: `${selectionHandleDefaultWidth}px`,
+      'border-radius': `${parseInt(selectionHandleDefaultWidth / 1.5, 10)}px`,
       background: '#F5F5FF',
       border: '1px solid #4285c8'
     });
@@ -249,20 +248,17 @@ class Border {
   }
 
   updateMultipleSelectionHandlesPosition(row, col, top, left, width, height) {
-    const handleWidth = parseInt(this.selectionHandles.topLeft.style.width, 10);
-    const hitAreaWidth = parseInt(this.selectionHandles.topLeftHitArea.style.width, 10);
+    this.selectionHandles.topLeft.style.top = `${parseInt(top - selectionHandleDefaultWidth, 10)}px`;
+    this.selectionHandles.topLeft.style.left = `${parseInt(left - selectionHandleDefaultWidth, 10)}px`;
 
-    this.selectionHandles.topLeft.style.top = `${parseInt(top - handleWidth, 10)}px`;
-    this.selectionHandles.topLeft.style.left = `${parseInt(left - handleWidth, 10)}px`;
-
-    this.selectionHandles.topLeftHitArea.style.top = `${parseInt(top - ((hitAreaWidth / 4) * 3), 10)}px`;
-    this.selectionHandles.topLeftHitArea.style.left = `${parseInt(left - ((hitAreaWidth / 4) * 3), 10)}px`;
+    this.selectionHandles.topLeftHitArea.style.top = `${parseInt(top - ((selectionHandleHitAreaDefaultWidth / 4) * 3), 10)}px`;
+    this.selectionHandles.topLeftHitArea.style.left = `${parseInt(left - ((selectionHandleHitAreaDefaultWidth / 4) * 3), 10)}px`;
 
     this.selectionHandles.bottomRight.style.top = `${parseInt(top + height, 10)}px`;
     this.selectionHandles.bottomRight.style.left = `${parseInt(left + width, 10)}px`;
 
-    this.selectionHandles.bottomRightHitArea.style.top = `${parseInt(top + height - (hitAreaWidth / 4), 10)}px`;
-    this.selectionHandles.bottomRightHitArea.style.left = `${parseInt(left + width - (hitAreaWidth / 4), 10)}px`;
+    this.selectionHandles.bottomRightHitArea.style.top = `${parseInt(top + height - (selectionHandleHitAreaDefaultWidth / 4), 10)}px`;
+    this.selectionHandles.bottomRightHitArea.style.left = `${parseInt(left + width - (selectionHandleHitAreaDefaultWidth / 4), 10)}px`;
 
     if (this.settings.border.cornerVisible && this.settings.border.cornerVisible()) {
       this.selectionHandles.topLeft.style.display = 'block';
@@ -443,7 +439,7 @@ class Border {
         this.ensureBorderAtPosition('corner');
         let cornerTop = top + height - 4;
         let cornerLeft = left + width - 4;
-        this.corner.style.borderRightWidth = cornerDefaultStyle.borderWidth;
+        this.corner.style.borderRightWidth = `${cornerDefaultStyle.borderWidth}px`;
 
         let trimmingContainer = getTrimmingContainer(wtTable.TABLE);
         const trimToWindow = trimmingContainer === rootWindow;
@@ -454,22 +450,22 @@ class Border {
 
         if (toColumn === this.wot.getSetting('totalColumns') - 1) {
           const toTdOffsetLeft = trimToWindow ? toTD.getBoundingClientRect().left : toTD.offsetLeft;
-          const cornerRightEdge = toTdOffsetLeft + outerWidth(toTD) + (parseInt(cornerDefaultStyle.width, 10) / 2);
+          const cornerRightEdge = toTdOffsetLeft + outerWidth(toTD) + (cornerDefaultStyle.width / 2);
           const cornerOverlappingContainer = cornerRightEdge >= innerWidth(trimmingContainer);
 
           if (cornerOverlappingContainer) {
-            cornerLeft = Math.floor(left + width - 3 - (parseInt(cornerDefaultStyle.width, 10) / 2));
+            cornerLeft = Math.floor(left + width - 3 - (cornerDefaultStyle.width / 2));
             this.corner.style.borderRightWidth = 0;
           }
         }
 
         if (toRow === this.wot.getSetting('totalRows') - 1) {
           const toTdOffsetTop = trimToWindow ? toTD.getBoundingClientRect().top : toTD.offsetTop;
-          const cornerBottomEdge = toTdOffsetTop + outerHeight(toTD) + (parseInt(cornerDefaultStyle.height, 10) / 2);
+          const cornerBottomEdge = toTdOffsetTop + outerHeight(toTD) + (cornerDefaultStyle.height / 2);
           const cornerOverlappingContainer = cornerBottomEdge >= innerHeight(trimmingContainer);
 
           if (cornerOverlappingContainer) {
-            cornerTop = Math.floor(top + height - 3 - (parseInt(cornerDefaultStyle.height, 10) / 2));
+            cornerTop = Math.floor(top + height - 3 - (cornerDefaultStyle.height / 2)); //bad
             this.corner.style.borderBottomWidth = 0;
           }
         }
