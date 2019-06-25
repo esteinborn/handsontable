@@ -57,18 +57,8 @@ class Border {
     this.left = null;
     this.bottom = null;
     this.right = null;
-
-    this.topStyle = null;
-    this.leftStyle = null;
-    this.bottomStyle = null;
-    this.rightStyle = null;
-
     this.corner = null;
-    this.cornerStyle = null;
-
-    this.selectionHandles = {
-      styles: {}
-    };
+    this.selectionHandles = {};
 
     this.registerListeners();
   }
@@ -191,7 +181,6 @@ class Border {
 
     this.bordersHolder.appendChild(div);
     this[position] = div;
-    this[`${position}Style`] = style;
 
     if (position === 'corner') {
       div.className += ' corner';
@@ -223,9 +212,6 @@ class Border {
 
     div.className = `${position}SelectionHandle`;
     divHitArea.className = `${position}SelectionHandle-HitArea`;
-
-    this.selectionHandles.styles[position] = div.style;
-    this.selectionHandles.styles[positionHitArea] = divHitArea.style;
 
     Object.assign(divHitArea.style, {
       position: 'absolute',
@@ -263,45 +249,45 @@ class Border {
   }
 
   updateMultipleSelectionHandlesPosition(row, col, top, left, width, height) {
-    const handleWidth = parseInt(this.selectionHandles.styles.topLeft.width, 10);
-    const hitAreaWidth = parseInt(this.selectionHandles.styles.topLeftHitArea.width, 10);
+    const handleWidth = parseInt(this.selectionHandles.topLeft.style.width, 10);
+    const hitAreaWidth = parseInt(this.selectionHandles.topLeftHitArea.style.width, 10);
 
-    this.selectionHandles.styles.topLeft.top = `${parseInt(top - handleWidth, 10)}px`;
-    this.selectionHandles.styles.topLeft.left = `${parseInt(left - handleWidth, 10)}px`;
+    this.selectionHandles.topLeft.style.top = `${parseInt(top - handleWidth, 10)}px`;
+    this.selectionHandles.topLeft.style.left = `${parseInt(left - handleWidth, 10)}px`;
 
-    this.selectionHandles.styles.topLeftHitArea.top = `${parseInt(top - ((hitAreaWidth / 4) * 3), 10)}px`;
-    this.selectionHandles.styles.topLeftHitArea.left = `${parseInt(left - ((hitAreaWidth / 4) * 3), 10)}px`;
+    this.selectionHandles.topLeftHitArea.style.top = `${parseInt(top - ((hitAreaWidth / 4) * 3), 10)}px`;
+    this.selectionHandles.topLeftHitArea.style.left = `${parseInt(left - ((hitAreaWidth / 4) * 3), 10)}px`;
 
-    this.selectionHandles.styles.bottomRight.top = `${parseInt(top + height, 10)}px`;
-    this.selectionHandles.styles.bottomRight.left = `${parseInt(left + width, 10)}px`;
+    this.selectionHandles.bottomRight.style.top = `${parseInt(top + height, 10)}px`;
+    this.selectionHandles.bottomRight.style.left = `${parseInt(left + width, 10)}px`;
 
-    this.selectionHandles.styles.bottomRightHitArea.top = `${parseInt(top + height - (hitAreaWidth / 4), 10)}px`;
-    this.selectionHandles.styles.bottomRightHitArea.left = `${parseInt(left + width - (hitAreaWidth / 4), 10)}px`;
+    this.selectionHandles.bottomRightHitArea.style.top = `${parseInt(top + height - (hitAreaWidth / 4), 10)}px`;
+    this.selectionHandles.bottomRightHitArea.style.left = `${parseInt(left + width - (hitAreaWidth / 4), 10)}px`;
 
     if (this.settings.border.cornerVisible && this.settings.border.cornerVisible()) {
-      this.selectionHandles.styles.topLeft.display = 'block';
-      this.selectionHandles.styles.topLeftHitArea.display = 'block';
+      this.selectionHandles.topLeft.style.display = 'block';
+      this.selectionHandles.topLeftHitArea.style.display = 'block';
 
       if (this.isPartRange(row, col)) {
-        this.selectionHandles.styles.bottomRight.display = 'none';
-        this.selectionHandles.styles.bottomRightHitArea.display = 'none';
+        this.selectionHandles.bottomRight.style.display = 'none';
+        this.selectionHandles.bottomRightHitArea.style.display = 'none';
       } else {
-        this.selectionHandles.styles.bottomRight.display = 'block';
-        this.selectionHandles.styles.bottomRightHitArea.display = 'block';
+        this.selectionHandles.bottomRight.style.display = 'block';
+        this.selectionHandles.bottomRightHitArea.style.display = 'block';
       }
     } else {
-      this.selectionHandles.styles.topLeft.display = 'none';
-      this.selectionHandles.styles.bottomRight.display = 'none';
-      this.selectionHandles.styles.topLeftHitArea.display = 'none';
-      this.selectionHandles.styles.bottomRightHitArea.display = 'none';
+      this.selectionHandles.topLeft.style.display = 'none';
+      this.selectionHandles.bottomRight.style.display = 'none';
+      this.selectionHandles.topLeftHitArea.style.display = 'none';
+      this.selectionHandles.bottomRightHitArea.style.display = 'none';
     }
 
     if (row === this.wot.wtSettings.getSetting('fixedRowsTop') || col === this.wot.wtSettings.getSetting('fixedColumnsLeft')) {
-      this.selectionHandles.styles.topLeft.zIndex = '9999';
-      this.selectionHandles.styles.topLeftHitArea.zIndex = '9999';
+      this.selectionHandles.topLeft.style.zIndex = '9999';
+      this.selectionHandles.topLeftHitArea.style.zIndex = '9999';
     } else {
-      this.selectionHandles.styles.topLeft.zIndex = '';
-      this.selectionHandles.styles.topLeftHitArea.zIndex = '';
+      this.selectionHandles.topLeft.style.zIndex = '';
+      this.selectionHandles.topLeftHitArea.style.zIndex = '';
     }
   }
 
@@ -419,43 +405,30 @@ class Border {
 
     if (this.shouldBorderBeRenderedAtPositon('top')) {
       this.ensureBorderAtPosition('top');
-      this.topStyle.top = `${top}px`;
-      this.topStyle.left = `${left}px`;
-      this.topStyle.width = `${width}px`;
-      this.topStyle.display = 'block';
+      this.updateElementPosition(this.top, top, left, width, null);
     }
 
     if (this.shouldBorderBeRenderedAtPositon('left')) {
       this.ensureBorderAtPosition('left');
-      this.leftStyle.top = `${top}px`;
-      this.leftStyle.left = `${left}px`;
-      this.leftStyle.height = `${height}px`;
-      this.leftStyle.display = 'block';
+      this.updateElementPosition(this.left, top, left, null, height);
     }
 
     const delta = Math.floor(this.settings.border.width / 2);
 
     if (this.shouldBorderBeRenderedAtPositon('bottom')) {
       this.ensureBorderAtPosition('bottom');
-      this.bottomStyle.top = `${top + height - delta}px`;
-      this.bottomStyle.left = `${left}px`;
-      this.bottomStyle.width = `${width}px`;
-      this.bottomStyle.display = 'block';
+      this.updateElementPosition(this.bottom, top + height - delta, left, width, null);
     }
 
     if (this.shouldBorderBeRenderedAtPositon('right')) {
       this.ensureBorderAtPosition('right');
-      this.rightStyle.top = `${top}px`;
-      this.rightStyle.left = `${left + width - delta}px`;
-      this.rightStyle.height = `${height + 1}px`;
-      this.rightStyle.display = 'block';
+      this.updateElementPosition(this.right, top, left + width - delta, null, height + 1);
     }
 
-    if (this.cornerStyle) {
+    if (this.corner) {
       // Hide the fill handle, so the possible further adjustments won't force unneeded scrollbars.
       // Also: what if `cornerVisibleSetting` changed between appears (i.e. `this.isPartRange(checkRow, checkCol) == true`)? to repro: drag handle one cell down, release
-
-      this.cornerStyle.display = 'none';
+      this.hideElement(this.corner);
     }
     if (this.shouldBorderBeRenderedAtPositon('corner')) {
 
@@ -468,10 +441,9 @@ class Border {
 
       if (!isMobileBrowser() && !this.isPartRange(checkRow, checkCol)) {
         this.ensureBorderAtPosition('corner');
-        this.cornerStyle.top = `${top + height - 4}px`;
-        this.cornerStyle.left = `${left + width - 4}px`;
-        this.cornerStyle.borderRightWidth = cornerDefaultStyle.borderWidth;
-        this.cornerStyle.width = cornerDefaultStyle.width;
+        let cornerTop = top + height - 4;
+        let cornerLeft = left + width - 4;
+        this.corner.style.borderRightWidth = cornerDefaultStyle.borderWidth;
 
         let trimmingContainer = getTrimmingContainer(wtTable.TABLE);
         const trimToWindow = trimmingContainer === rootWindow;
@@ -486,8 +458,8 @@ class Border {
           const cornerOverlappingContainer = cornerRightEdge >= innerWidth(trimmingContainer);
 
           if (cornerOverlappingContainer) {
-            this.cornerStyle.left = `${Math.floor(left + width - 3 - (parseInt(cornerDefaultStyle.width, 10) / 2))}px`;
-            this.cornerStyle.borderRightWidth = 0;
+            cornerLeft = Math.floor(left + width - 3 - (parseInt(cornerDefaultStyle.width, 10) / 2));
+            this.corner.style.borderRightWidth = 0;
           }
         }
 
@@ -497,12 +469,12 @@ class Border {
           const cornerOverlappingContainer = cornerBottomEdge >= innerHeight(trimmingContainer);
 
           if (cornerOverlappingContainer) {
-            this.cornerStyle.top = `${Math.floor(top + height - 3 - (parseInt(cornerDefaultStyle.height, 10) / 2))}px`;
-            this.cornerStyle.borderBottomWidth = 0;
+            cornerTop = Math.floor(top + height - 3 - (parseInt(cornerDefaultStyle.height, 10) / 2));
+            this.corner.style.borderBottomWidth = 0;
           }
         }
 
-        this.cornerStyle.display = 'block';
+        this.updateElementPosition(this.corner, cornerTop, cornerLeft, null, null);
       }
     }
 
@@ -683,31 +655,60 @@ class Border {
   }
 
   /**
+   * Update styles on element regarding it's position and show it
+   * @param {HTMLElement} elem
+   * @param {Number} top
+   * @param {Number} left
+   * @param {Number} width Optional
+   * @param {Number} height Optional
+   */
+  updateElementPosition(elem, top, left, width, height) {
+    const style = elem.style;
+    style.top = `${top}px`;
+    style.left = `${left}px`;
+    if (width !== null) {
+      style.width = `${width}px`;
+    }
+    if (height !== null) {
+      style.height = `${height}px`;
+    }
+    style.display = 'block';
+  }
+
+  /**
+   * Hide element
+   * @param {HTMLElement} elem
+   */
+  hideElement(elem) {
+    elem.style.display = 'none';
+  }
+
+  /**
    * Hide border
    */
   disappear() {
-    if (this.topStyle) {
-      this.topStyle.display = 'none';
+    if (this.top) {
+      this.hideElement(this.top);
     }
-    if (this.leftStyle) {
-      this.leftStyle.display = 'none';
+    if (this.left) {
+      this.hideElement(this.left);
     }
-    if (this.bottomStyle) {
-      this.bottomStyle.display = 'none';
+    if (this.bottom) {
+      this.hideElement(this.bottom);
     }
-    if (this.rightStyle) {
-      this.rightStyle.display = 'none';
+    if (this.right) {
+      this.hideElement(this.right);
     }
-    if (this.cornerStyle) {
-      this.cornerStyle.display = 'none';
+    if (this.corner) {
+      this.hideElement(this.corner);
     }
-    if (this.selectionHandles.styles.topLeft) {
-      this.selectionHandles.styles.topLeft.display = 'none';
-      this.selectionHandles.styles.topLeftHitArea.display = 'none';
+    if (this.selectionHandles.topLeft) {
+      this.hideElement(this.selectionHandles.topLeft);
+      this.hideElement(this.selectionHandles.topLeftHitArea);
     }
-    if (this.selectionHandles.styles.bottomRight) {
-      this.selectionHandles.styles.bottomRight.display = 'none';
-      this.selectionHandles.styles.bottomRightHitArea.display = 'none';
+    if (this.selectionHandles.bottomRight) {
+      this.hideElement(this.selectionHandles.bottomRight);
+      this.hideElement(this.selectionHandles.bottomRightHitArea);
     }
   }
 

@@ -633,7 +633,7 @@ class CustomBorders extends BasePlugin {
     arrayEach(this.hot.selection.highlight.customSelections, (customSelection) => {
       if (border.id === customSelection.settings.id) {
         objectEach(customSelection.instanceBorders, (borderObject) => {
-          borderObject.toggleHiddenClass(place, remove); // TODO this also bad?
+          borderObject.toggleHiddenClass(place, remove); // TODO this is bad, becase this changes the rendering, not configuration
         });
 
         check = true;
