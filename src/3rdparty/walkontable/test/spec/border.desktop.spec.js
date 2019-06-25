@@ -790,7 +790,7 @@ describe('Walkontable.Border - desktop', () => {
       $td1.simulate('mousedown');
       expect($border.is(':visible')).toBe(true);
 
-      $border.simulate('mouseenter');
+      $border.simulate('mouseover');
       expect($border.is(':visible')).toBe(true);
 
       $td2.simulate('mousemove');
@@ -823,7 +823,7 @@ describe('Walkontable.Border - desktop', () => {
       $td1.simulate('mousedown');
       expect($border.is(':visible')).toBe(true);
 
-      $border.simulate('mouseenter');
+      $border.simulate('mouseover');
       expect($border.is(':visible')).toBe(false);
 
       $td2.simulate('mousemove');
