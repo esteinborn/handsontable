@@ -447,9 +447,6 @@ class Overlays {
    *
    */
   destroy() {
-    if (this.destroyed) {
-      throw new Error('This Overlays was already destroyed');
-    }
     if (this.wot.selections) {
       const highlights = Array.from(this.wot.selections);
       for (let i = 0; i < highlights.length; i++) {

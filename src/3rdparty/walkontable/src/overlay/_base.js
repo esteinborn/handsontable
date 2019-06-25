@@ -403,10 +403,6 @@ class Overlay {
    * Destroy overlay instance
    */
   destroy() {
-    if (this.destroyed) {
-      throw new Error('This Overlay was already destroyed');
-    }
-    this.destroyed = true;
     (new EventManager(this.clone)).destroy();
   }
 }
