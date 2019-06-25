@@ -253,12 +253,11 @@ class Selection {
       }
 
       for (let column = 0; column < renderedColumns; column += 1) {
-        areRenderedCells = true;
-
         const sourceCol = wotInstance.wtTable.columnFilter.renderedToSource(column);
 
         if (sourceRow >= topRow && sourceRow <= bottomRow && sourceCol >= topColumn && sourceCol <= bottomColumn) {
           // selected cell
+          areRenderedCells = true;
           if (this.settings.className) {
             this.addClassAtCoords(wotInstance, sourceRow, sourceCol, this.settings.className, this.settings.markIntersections);
           }
@@ -286,9 +285,16 @@ class Selection {
 
     wotInstance.getSetting('onBeforeDrawBorders', corners, this.settings.className);
 
-    if (areRenderedCells && this.settings.border) {
+    if (this.settings.border) {
       // warning! border.appear modifies corners!
-      this.getBorder(wotInstance).appear(corners);
+      if (areRenderedCells) {
+        this.getBorder(wotInstance).appear(corners);
+      } else {
+        const existingBorder = this.getBorderIfExists(wotInstance);
+        if (existingBorder) {
+          existingBorder.disappear();
+        }
+      }
     }
   }
 
