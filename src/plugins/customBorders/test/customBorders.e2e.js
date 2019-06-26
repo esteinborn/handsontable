@@ -1021,7 +1021,7 @@ describe('CustomBorders', () => {
       await sleep(300);
       expect(instance.countRenderedRows()).toEqual(5);
       expect(countVisibleCustomBorders()).toEqual(5);
-      expect(countCustomBorders()).toEqual(10); // once rendered borders are not removed but hidden
+      expect(countCustomBorders()).toEqual(5); // previously rendered borders are re-used
     });
 
     it('should render borders only for rendered rows, including rows rendered because of viewportRowRenderingOffset', () => {

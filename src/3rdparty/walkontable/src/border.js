@@ -84,16 +84,21 @@ class Border {
    * @param {Object} settings
    */
   createBorder(position) {
-    const div = this.wot.rootDocument.createElement('div');
-
-    div.className = `wtBorder ${this.settings.className || ''}`; // + borderDivs[i];
+    let div = this.wot.wtTable.bordersHolder.reusablePool.shift();
+    let needsAppending;
+    if (!div) {
+      div = this.wot.rootDocument.createElement('div');
+      div.className = `wtBorder ${this.settings.className || ''}`; // + borderDivs[i];
+      needsAppending = true;
+    } else {
+      needsAppending = false;
+    }
 
     const style = div.style;
     style.backgroundColor = (this.settings[position] && this.settings[position].color) ? this.settings[position].color : this.settings.border.color;
     style.height = (this.settings[position] && this.settings[position].width) ? `${this.settings[position].width}px` : `${this.settings.border.width}px`;
     style.width = (this.settings[position] && this.settings[position].width) ? `${this.settings[position].width}px` : `${this.settings.border.width}px`;
 
-    this.wot.wtTable.bordersHolder.container.appendChild(div);
     this[position] = div;
 
     if (position === 'corner') {
@@ -105,6 +110,14 @@ class Border {
         cornerDefaultStyle.borderStyle,
         cornerDefaultStyle.borderColor
       ].join(' ');
+    } else if (position === 'left' || position === 'right') {
+      style.width = (this.settings[position] && this.settings[position].width) ? `${this.settings[position].width}px` : `${this.settings.border.width}px`;
+    } else if (position === 'top' || position === 'bottom') {
+      style.height = (this.settings[position] && this.settings[position].width) ? `${this.settings[position].width}px` : `${this.settings.border.width}px`;
+    }
+
+    if (needsAppending) {
+      this.wot.wtTable.bordersHolder.container.appendChild(div);
     }
   }
 
@@ -164,8 +177,8 @@ class Border {
         null, null);
 
       if (this.isPartRange(row, col)) {
-        this.hideElement(this.selectionHandles.bottomRight);
-        this.hideElement(this.selectionHandles.bottomRightHitArea);
+        this.hideElement(this.selectionHandles, 'bottomRight');
+        this.hideElement(this.selectionHandles, 'bottomRightHitArea');
       } else {
         this.updateElementPosition(this.selectionHandles.bottomRight, top + height, left + width, null, null);
         this.updateElementPosition(this.selectionHandles.bottomRightHitArea,
@@ -182,10 +195,10 @@ class Border {
         this.selectionHandles.topLeftHitArea.style.zIndex = '';
       }
     } else {
-      this.hideElement(this.selectionHandles.topLeft);
-      this.hideElement(this.selectionHandles.bottomRight);
-      this.hideElement(this.selectionHandles.topLeftHitArea);
-      this.hideElement(this.selectionHandles.bottomRightHitArea);
+      this.hideElement(this.selectionHandles, 'topLeft');
+      this.hideElement(this.selectionHandles, 'bottomRight');
+      this.hideElement(this.selectionHandles, 'topLeftHitArea');
+      this.hideElement(this.selectionHandles, 'bottomRightHitArea');
     }
   }
 
@@ -251,7 +264,7 @@ class Border {
     if (this.corner) {
       // Hide the fill handle, so the possible further adjustments won't force unneeded scrollbars.
       // Also: what if `cornerVisibleSetting` changed between appears (i.e. `this.isPartRange(checkRow, checkCol) == true`)? to repro: drag handle one cell down, release
-      this.hideElement(this.corner);
+      this.hideElement(this, 'corner');
     }
     if (this.shouldBorderBeRenderedAtPositon('corner')) {
 
@@ -414,10 +427,15 @@ class Border {
 
   /**
    * Hide element
-   * @param {HTMLElement} elem
+   * @param {Object} obj
+   * @param {Object} prop Name of the property that contains reference to the element
    */
-  hideElement(elem) {
-    elem.style.display = 'none';
+  hideElement(obj, prop) {
+    obj[prop].style.display = 'none';
+    if (!this.settings.className) {
+      this.wot.wtTable.bordersHolder.reusablePool.push(obj[prop]);
+      obj[prop] = null;
+    }
   }
 
   /**
@@ -425,27 +443,27 @@ class Border {
    */
   disappear() {
     if (this.top) {
-      this.hideElement(this.top);
+      this.hideElement(this, 'top');
     }
     if (this.left) {
-      this.hideElement(this.left);
+      this.hideElement(this, 'left');
     }
     if (this.bottom) {
-      this.hideElement(this.bottom);
+      this.hideElement(this, 'bottom');
     }
     if (this.right) {
-      this.hideElement(this.right);
+      this.hideElement(this, 'right');
     }
     if (this.corner) {
-      this.hideElement(this.corner);
+      this.hideElement(this, 'corner');
     }
     if (this.selectionHandles.topLeft) {
-      this.hideElement(this.selectionHandles.topLeft);
-      this.hideElement(this.selectionHandles.topLeftHitArea);
+      this.hideElement(this.selectionHandles, 'topLeft');
+      this.hideElement(this.selectionHandles, 'topLeftHitArea');
     }
     if (this.selectionHandles.bottomRight) {
-      this.hideElement(this.selectionHandles.bottomRight);
-      this.hideElement(this.selectionHandles.bottomRightHitArea);
+      this.hideElement(this.selectionHandles, 'bottomRight');
+      this.hideElement(this.selectionHandles, 'bottomRightHitArea');
     }
   }
 

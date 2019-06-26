@@ -16,6 +16,8 @@ class BordersHolder {
     const documentBody = this.wot.rootDocument.body;
     this.eventManager.addEventListener(documentBody, 'mousedown', () => this.onMouseDown());
     this.eventManager.addEventListener(documentBody, 'mouseup', () => this.onMouseUp());
+
+    this.reusablePool = [];
   }
 
   /**
