@@ -254,10 +254,10 @@ describe('Walkontable.Border - mobile', () => {
     const $td2 = $table.find('tbody tr:eq(2) td:eq(1)');
     $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-    const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft);
-    const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea);
-    const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight);
-    const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea);
+    const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandleTopLeft);
+    const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandleTopLeftHitArea);
+    const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandleBottomRight);
+    const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandleBottomRightHitArea);
 
     expect($corner.is(':visible')).toBe(false);
     expect($selectionHandleTopLeft.css('width')).toBe('10px');
@@ -328,15 +328,15 @@ describe('Walkontable.Border - mobile', () => {
     wt.draw();
 
     expect($(wt.selections.getCell().getBorder(wt).corner).is(':visible')).toBe(false);
-    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft).is(':visible')).toBe(false);
-    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea).is(':visible')).toBe(false);
-    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight).is(':visible')).toBe(false);
-    expect($(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea).is(':visible')).toBe(false);
+    expect($(wt.selections.getCell().getBorder(wt).selectionHandleTopLeft).is(':visible')).toBe(false);
+    expect($(wt.selections.getCell().getBorder(wt).selectionHandleTopLeftHitArea).is(':visible')).toBe(false);
+    expect($(wt.selections.getCell().getBorder(wt).selectionHandleBottomRight).is(':visible')).toBe(false);
+    expect($(wt.selections.getCell().getBorder(wt).selectionHandleBottomRightHitArea).is(':visible')).toBe(false);
     expect($(wt.selections.getAreas()[0].getBorder(wt).corner).is(':visible')).toBe(false);
-    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandles.topLeft).is(':visible')).toBe(true);
-    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandles.topLeftHitArea).is(':visible')).toBe(true);
-    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandles.bottomRight).is(':visible')).toBe(true);
-    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandles.bottomRightHitArea).is(':visible')).toBe(true);
+    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandleTopLeft).is(':visible')).toBe(true);
+    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandleTopLeftHitArea).is(':visible')).toBe(true);
+    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandleBottomRight).is(':visible')).toBe(true);
+    expect($(wt.selections.getAreas()[0].getBorder(wt).selectionHandleBottomRightHitArea).is(':visible')).toBe(true);
   });
 
   it('on touch, should move the fill handle / corner border to the left, if in the position it would overlap the container (e.g.: far-right)', () => {
@@ -374,10 +374,10 @@ describe('Walkontable.Border - mobile', () => {
     const $td3 = $table.find('tbody tr:eq(2) td:eq(1)');
     $td1[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-    const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft);
-    const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea);
-    const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight);
-    const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea);
+    const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandleTopLeft);
+    const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandleTopLeftHitArea);
+    const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandleBottomRight);
+    const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandleBottomRightHitArea);
 
     expect($corner.is(':visible')).toBe(false);
     expect($selectionHandleTopLeft.css('width')).toBe('10px');
@@ -477,10 +477,10 @@ describe('Walkontable.Border - mobile', () => {
     const $td = $table.find('tbody tr:last-of-type td:last-of-type');
     $td[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-    const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft);
-    const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea);
-    const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight);
-    const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea);
+    const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandleTopLeft);
+    const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandleTopLeftHitArea);
+    const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandleBottomRight);
+    const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandleBottomRightHitArea);
 
     wt.draw();
 
@@ -543,10 +543,10 @@ describe('Walkontable.Border - mobile', () => {
     const $td = $table.find('tbody tr:last-of-type td:last-of-type');
     $td[0].dispatchEvent(new CustomEvent('touchstart', { bubbles: true }));
     const $corner = $(wt.selections.getCell().getBorder(wt).corner);
-    const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeft);
-    const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.topLeftHitArea);
-    const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRight);
-    const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandles.bottomRightHitArea);
+    const $selectionHandleTopLeft = $(wt.selections.getCell().getBorder(wt).selectionHandleTopLeft);
+    const $selectionHandleTopLeftHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandleTopLeftHitArea);
+    const $selectionHandleBottomRight = $(wt.selections.getCell().getBorder(wt).selectionHandleBottomRight);
+    const $selectionHandleBottomRighHitArea = $(wt.selections.getCell().getBorder(wt).selectionHandleBottomRightHitArea);
 
     wt.draw();
 

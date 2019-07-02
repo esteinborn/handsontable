@@ -88,6 +88,7 @@ class BordersHolder {
   destroy() {
     this.eventManager.destroyWithOwnEventsOnly();
     this.container.parentNode.removeChild(this.container);
+    this.reusablePool = [];
   }
 }
 

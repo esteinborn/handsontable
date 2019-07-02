@@ -380,16 +380,60 @@ class Table {
       }
     }
 
+    var renderList = [];
     for (let i = 0; i < len; i++) {
-      highlights[i].draw(wot);
+      var result = highlights[i].draw(wot);
+      if (result) {
+        renderList.push(result);
+      }
     }
+    for (let i = 0; i < renderList.length; i++) {
+      renderList[i]();
+    }
+  }
+
+  /**
+   * Checks if coords are within rendered fragment of the table
+   *
+   * @param {Number} row
+   * @param {Number} column
+   * @returns {HTMLElement|Number} False or Number one of the exit codes on error:
+   *  -1 row before rendered
+   *  -2 row after rendered
+   *  -3 column before rendered
+   *  -4 column after rendered
+   */
+  areCoordsBeyondRendered(row, column) {
+    if (this.isRowBeforeRenderedRows(row)) {
+      // row before rendered rows
+      return -1;
+    } else if ((Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_BOTTOM) || Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_BOTTOM_LEFT_CORNER)) && column < this.instance.getSetting('totalRows') - this.wot.getSetting('fixedRowsBottom')) {
+      // row after rendered rows in top overlay
+      return -1;
+    } else if (this.isRowAfterRenderedRows(row)) {
+      // row after rendered rows
+      return -2;
+    } else if ((Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_TOP) || Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_TOP_LEFT_CORNER)) && row >= this.wot.getSetting('fixedRowsTop')) {
+      // row after rendered rows in top overlay
+      return -2;
+    } else if (this.isColumnBeforeRenderedColumns(column)) {
+      // column before rendered columns
+      return -3;
+    } else if (this.isColumnAfterRenderedColumns(column)) {
+      // column after rendered columns
+      return -4;
+    } else if ((Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_LEFT) || Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_TOP_LEFT_CORNER)) && column >= this.wot.getSetting('fixedColumnsLeft')) {
+      // column after rendered columns in left overlay
+      return -4;
+    }
+    return false;
   }
 
   /**
    * Get cell element at coords.
    *
    * @param {CellCoords} coords
-   * @returns {HTMLElement|Number} HTMLElement on success or Number one of the exit codes on error:
+   * @returns {HTMLElement|Number|undefined} HTMLElement on success or Undefined if technically rendered but on a different overlay Number one of the exit codes on error:
    *  -1 row before viewport
    *  -2 row after viewport
    *  -3 column before viewport
@@ -404,27 +448,23 @@ class Table {
       [row, column] = hookResult;
     }
 
-    if (this.isRowBeforeRenderedRows(row)) {
-      // row before rendered rows
-      return -1;
-
-    } else if (this.isRowAfterRenderedRows(row)) {
-      // row after rendered rows
-      return -2;
-
-    } else if (this.isColumnBeforeRenderedColumns(column)) {
-      // column before rendered columns
-      return -3;
-
-    } else if (this.isColumnAfterRenderedColumns(column)) {
-      // column after rendered columns
-      return -4;
+    const beyondViewport = this.areCoordsBeyondRendered(row, column);
+    if (beyondViewport !== false) {
+      return beyondViewport;
     }
 
     const TR = this.TBODY.childNodes[this.rowFilter.sourceToRendered(row)];
 
     if (TR) {
+      if (!TR.childNodes[this.columnFilter.sourceColumnToVisibleRowHeadedColumn(column)]) {
+        debugger;
+        console.log("- no such TD", TR.childNodes[this.columnFilter.sourceColumnToVisibleRowHeadedColumn(column)]);
+      }
       return TR.childNodes[this.columnFilter.sourceColumnToVisibleRowHeadedColumn(column)];
+    }
+    else {
+      debugger;
+      console.log("- no such TR");
     }
   }
 
@@ -551,9 +591,6 @@ class Table {
     return this.wot.wtViewport.rowsVisibleCalculator.endRow;
   }
 
-  /**
-   * @returns {Number} Returns source index of last rendered column
-   */
   getLastRenderedColumn() {
     return this.wot.wtViewport.columnsRenderCalculator.endColumn;
   }
