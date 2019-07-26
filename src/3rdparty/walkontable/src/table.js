@@ -408,13 +408,15 @@ class Table {
       // row before rendered rows
       return -1;
     } else if ((Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_BOTTOM) || Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_BOTTOM_LEFT_CORNER)) && column < this.instance.getSetting('totalRows') - this.wot.getSetting('fixedRowsBottom')) {
-      // row after rendered rows in top overlay
+      // row after rendered rows in bottom overlay
+      // fixes https://github.com/handsontable/handsontable/issues/6043
       return -1;
     } else if (this.isRowAfterRenderedRows(row)) {
       // row after rendered rows
       return -2;
     } else if ((Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_TOP) || Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_TOP_LEFT_CORNER)) && row >= this.wot.getSetting('fixedRowsTop')) {
       // row after rendered rows in top overlay
+      // fixes https://github.com/handsontable/handsontable/issues/6043
       return -2;
     } else if (this.isColumnBeforeRenderedColumns(column)) {
       // column before rendered columns
@@ -424,6 +426,7 @@ class Table {
       return -4;
     } else if ((Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_LEFT) || Overlay.isOverlayTypeOf(this.wot.cloneOverlay, Overlay.CLONE_TOP_LEFT_CORNER)) && column >= this.wot.getSetting('fixedColumnsLeft')) {
       // column after rendered columns in left overlay
+      // fixes https://github.com/handsontable/handsontable/issues/6043
       return -4;
     }
     return false;
