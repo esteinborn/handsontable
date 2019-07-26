@@ -187,17 +187,6 @@ class Border {
     return false;
   }
 
-  updateMultipleSelectionHandlesPosition(row, col, top, left, width, height) {
-    if (this.settings.border.cornerVisible && this.settings.border.cornerVisible()) {
-
-    } else {
-      this.hideElement(this.selectionHandleTopLeft);
-      this.hideElement(this.selectionHandleTopLeftHitArea);
-      this.hideElement(this.selectionHandleBottomRight);
-      this.hideElement(this.selectionHandleBottomRightHitArea);
-    }
-  }
-
   /**
    * Show border around one or many cells. It is prohibited to do any DOM writes in this function.
    *
@@ -360,7 +349,7 @@ class Border {
 
   shouldBorderBeRenderedAtPositon(position) {
     if (position === 'corner') {
-      let cornerVisibleSetting = this.settings.border.cornerVisible;
+      let cornerVisibleSetting = this.settings.border.cornerVisible; // TODO HOT only uses this as a function so why check for other options here
       cornerVisibleSetting = typeof cornerVisibleSetting === 'function' ? cornerVisibleSetting(this.settings.layerLevel) : cornerVisibleSetting;
       return cornerVisibleSetting;
     }
@@ -369,15 +358,14 @@ class Border {
 
   ensureBorderAtPosition(position) {
     if (!this[position]) {
-      this.createBorder(position);
+      if (position.indexOf('selectionHandle') > -1) {
+        this.createMultipleSelectorHandles(position);
+      }
+      else {
+        this.createBorder(position);
+      }
     }
     return this[position];
-  }
-
-  ensureMultipleSelectorHandleAtPosition(position) {
-    if (!this.selectionHandles[position]) {
-      this.createMultipleSelectorHandles(position);
-    }
   }
 
   /**

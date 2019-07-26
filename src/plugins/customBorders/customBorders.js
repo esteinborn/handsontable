@@ -553,7 +553,7 @@ class CustomBorders extends BasePlugin {
     arrayEach(this.hot.selection.highlight.customSelections, (customSelection, index) => {
       if (customSelection.cellRange === null) {
         this.hot.selection.highlight.customSelections[index].destroy();
-        this.hot.selection.highlight.customSelections.splice(index, 1);
+        this.hot.selection.highlight.customSelections.splice(index, 1); //is this correct?
 
         return false; // breaks forAll
       }
@@ -582,7 +582,7 @@ class CustomBorders extends BasePlugin {
     const index = arrayMap(this.savedBorders, border => border.id).indexOf(borderId);
 
     if (index > -1) {
-      this.savedBorders.splice(index, 1);
+      this.savedBorders.splice(index, 1); //is this correct?
     }
   }
 

@@ -20,8 +20,7 @@ export function getParent(element, level = 0) {
 
   while (elementToCheck !== null) {
     if (iteration === level) {
-      parent = elementToCheck;
-      break;
+      return elementToCheck;
     }
 
     if (elementToCheck.host && elementToCheck.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
@@ -37,6 +36,56 @@ export function getParent(element, level = 0) {
 }
 
 /**
+ * Goes up the DOM tree (including given element) until it finds an element that matches the nodes
+ * This method goes up through web components.
+ *
+ * @param {HTMLElement} elementToCheck Element from which traversing is started
+ * @param {Array} nodes Array of elements
+ * @param {HTMLElement} [until]
+ * @returns {HTMLElement|null}
+ */
+export function closestElement(elementToCheck, nodes, until) {
+  while (elementToCheck !== null && elementToCheck !== until) {
+    if (elementToCheck.host && elementToCheck.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+      elementToCheck = elementToCheck.host;
+    }
+
+    if (nodes.indexOf(elementToCheck) > -1) {
+      return elementToCheck;
+    }
+
+    elementToCheck = elementToCheck.parentNode;
+  }
+
+  return null;
+}
+
+/**
+ * Goes up the DOM tree (including given element) until it finds an element that matches the node names.
+ * This method goes up through web components.
+ *
+ * @param {HTMLElement} element Element from which traversing is started
+ * @param {Array} nodes Array of element names
+ * @param {HTMLElement} [until]
+ * @returns {HTMLElement|null}
+ */
+export function closestName(elementToCheck, nodes, until) {
+  while (elementToCheck !== null && elementToCheck !== until) {
+    if (elementToCheck.host && elementToCheck.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+      elementToCheck = elementToCheck.host;
+    }
+
+    if (nodes.indexOf(elementToCheck.nodeName) > -1) {
+      return elementToCheck;
+    }
+
+    elementToCheck = elementToCheck.parentNode;
+  }
+
+  return null;
+}
+
+/**
  * Goes up the DOM tree (including given element) until it finds an element that matches the nodes or nodes name.
  * This method goes up through web components.
  *
@@ -49,7 +98,7 @@ export function closest(element, nodes, until) {
   let elementToCheck = element;
 
   while (elementToCheck !== null && elementToCheck !== until) {
-    if (elementToCheck.nodeType === Node.ELEMENT_NODE && (nodes.indexOf(elementToCheck.nodeName) > -1 || nodes.indexOf(elementToCheck) > -1)) {
+    if (elementToCheck.nodeType === Node.ELEMENT_NODE && (nodes.indexOf(elementToCheck.nodeName || elementToCheck) > -1)) {
       return elementToCheck;
     }
     if (elementToCheck.host && elementToCheck.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
@@ -263,7 +312,7 @@ if (isClassListSupported()) {
     className = filterEmptyClassNames(className);
 
     if (className.length > 0) {
-      if (isSupportMultipleClassesArg(rootDocument)) {
+      if (isSupportMultipleClassesArg(rootDocument)) { //TODO perf this should be checked ahead of time, not inside every call to _addClass
         element.classList.add(...className);
 
       } else {
